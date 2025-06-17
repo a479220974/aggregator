@@ -9,26 +9,30 @@ env:
   # time zone
   TZ: Asia/Shanghai
 
+  # GitHub Gist 配置 (添加这两行)
+  GIST_PAT: ${{ secrets.GIST_PAT }}
+  GIST_LINK: ${{ secrets.GIST_LINK }}
+
   # network proxy aggregate config
   SUBSCRIBE_CONF: ${{ secrets.SUBSCRIBE_CONF }}
 
-  # token
-  PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+  # token (添加默认值，避免为空)
+  PUSH_TOKEN: ${{ secrets.PUSH_TOKEN || '' }}
 
-  # network reachable
-  REACHABLE: ${{ vars.REACHABLE }}
+  # network reachable (添加默认值)
+  REACHABLE: ${{ vars.REACHABLE || 'true' }}
 
-  # not check connective
-  SKIP_ALIVE_CHECK: ${{ vars.SKIP_ALIVE_CHECK }}
+  # not check connective (添加默认值)
+  SKIP_ALIVE_CHECK: ${{ vars.SKIP_ALIVE_CHECK || 'false' }}
 
-  # skip remark
-  SKIP_REMARK: ${{ vars.SKIP_REMARK }}
+  # skip remark (添加默认值)
+  SKIP_REMARK: ${{ vars.SKIP_REMARK || 'false' }}
 
-  # workflow mode
-  WORKFLOW_MODE: ${{ vars.WORKFLOW_MODE }}
+  # workflow mode (添加默认值)
+  WORKFLOW_MODE: ${{ vars.WORKFLOW_MODE || 'normal' }}
 
-  # include spwcial protocols, such vless hysteria2 and hysteria
-  ENABLE_SPECIAL_PROTOCOLS: ${{ vars.ENABLE_SPECIAL_PROTOCOLS }}
+  # include special protocols, such vless hysteria2 and hysteria
+  ENABLE_SPECIAL_PROTOCOLS: ${{ vars.ENABLE_SPECIAL_PROTOCOLS || 'true' }}
 
 jobs:
   process:
@@ -50,8 +54,23 @@ jobs:
       - name: Install
         run: pip3 install -r requirements.txt
 
+      - name: Debug Environment
+        run: |
+          echo "GIST_PAT: ${GIST_PAT:0:5}***"  # 打印前5个字符用于调试
+          echo "GIST_LINK: ${GIST_LINK}"
+          echo "SUBSCRIBE_CONF: ${SUBSCRIBE_CONF:0:5}***"
+          echo "PUSH_TOKEN: ${PUSH_TOKEN:0:5}***"
+          echo "REACHABLE: ${REACHABLE}"
+          echo "SKIP_ALIVE_CHECK: ${SKIP_ALIVE_CHECK}"
+          echo "SKIP_REMARK: ${SKIP_REMARK}"
+          echo "WORKFLOW_MODE: ${WORKFLOW_MODE}"
+          echo "ENABLE_SPECIAL_PROTOCOLS: ${ENABLE_SPECIAL_PROTOCOLS}"
+
       - name: Process
-        run: python -u subscribe/process.py --overwrite
+        run: python -u subscribe/process.py --overwrite --skip
+
+      - name: Timestamp
+        run: date
 
       - name: Timestamp
         run: date
