@@ -67,7 +67,7 @@ jobs:
           echo "ENABLE_SPECIAL_PROTOCOLS: ${ENABLE_SPECIAL_PROTOCOLS}"
 
       - name: Process
-        run: python -u subscribe/process.py --overwrite --skip
+        run: python -u subscribe/process.py --overwrite
 
       - name: Timestamp
         run: date
